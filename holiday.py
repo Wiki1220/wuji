@@ -94,5 +94,5 @@ if __name__ == "__main__":
         analyze_pm25_by_quarter(data, year=args.year, quarter=args.quarter, holiday_mode=args.holiday_mode)
     except SystemExit:
         # 当命令行参数未提供时，直接运行默认参数
-        data = pd.read_csv('data/data.csv')  # 替换为你的数据文件路径
+        data = pd.read_csv('data/data.csv')  
         analyze_pm25_by_quarter(data, year=2017, quarter=1, holiday_mode='holiday')
