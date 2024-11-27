@@ -1,5 +1,4 @@
 import pandas as pd
-
 def split_city_data(file_path):
     # 读取数据文件，假设数据格式为CSV
     data = pd.read_csv(file_path)
@@ -29,3 +28,59 @@ def add_time_index(dataframe, start_date='2017-01-01', freq='3h'):
     # 返回添加时间索引后的DataFrame
     return dataframe
 
+
+
+# 下面是另一个功能，一次性使用没封装
+
+
+# # 假设你的数据已加载到DataFrame中
+# data = pd.read_csv('data/mata.csv')
+
+# # 合并“日期”和“时刻”列到新的“时间”列
+# data['时间'] = pd.to_datetime(data['日期']) + pd.to_timedelta(data['时刻'], unit='h')
+
+# data = data.drop(columns=['日期', '时刻'])
+
+# # 重命名列名为英文
+# data = data.rename(columns={
+#     '城市': 'City',
+#     '温度': 'Temperature',
+#     '边界层高度': 'BL_Height',
+#     '地表气压': 'Surface_Pressure',
+#     '降水量': 'Precipitation',
+#     '相对湿度': 'Humidity',
+#     'U水平风速': 'U_WindSpeed',
+#     'V方向风速': 'V_WindSpeed',
+#     'PM2.5浓度': 'PM2_5',
+#     '经度': 'Longitude',
+#     '纬度': 'Latitude',
+#     '时间': 'time',
+# })
+
+# # 将数据保存为CSV文件
+# data.to_csv('endata.csv', index=False)
+
+# # 输出结果，查看新数据
+# print(data.head())
+
+# 保留到日的数据，并加入整数索引。
+
+
+
+df = pd.read_csv('data/endata.csv')
+
+# 将'time'列转换为datetime格式
+df['time'] = pd.to_datetime(df['time'])
+
+# 筛选出每日0点的数据
+df_00h = df[df['time'].dt.hour == 0]
+
+# 计算'第一个时间点'距离当前行的天数
+start_date = df_00h['time'].min()  # 获取最早的日期
+df_00h['timeline'] = (df_00h['time'] - start_date).dt.days
+
+# 查看处理后的数据
+print(df_00h.head(20))
+
+# 将处理后的数据保存为新文件
+df_00h.to_csv('data/daydata.csv', index=False)
